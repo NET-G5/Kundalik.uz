@@ -6,9 +6,9 @@
         public string GradeValue { get; set; }
         public DateTime Date { get; set; }
         public int StudentId { get; set; }
-        public Student Student { get; set; }
+        public virtual Student Student { get; set; }
         public int TeacherSubjectId { get; set; }
-        public TeacherSubject TeacherSubject { get; set; }
+        public virtual TeacherSubject TeacherSubject { get; set; }
 
 
     }
