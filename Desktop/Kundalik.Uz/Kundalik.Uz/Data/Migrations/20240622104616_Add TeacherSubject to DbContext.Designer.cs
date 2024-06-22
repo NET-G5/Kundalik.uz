@@ -4,6 +4,7 @@ using Kundalik.Uz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kundalik.Uz.Data.Migrations
 {
     [DbContext(typeof(KundalikDbContext))]
-    partial class KundalikDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240622104616_Add TeacherSubject to DbContext")]
+    partial class AddTeacherSubjecttoDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,19 +60,22 @@ namespace Kundalik.Uz.Data.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SubjectId")
+                    b.Property<int>("TeacherSubjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeacherId")
+                    b.Property<int>("TeacherSubjectSubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeacherSubjectTeacherId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
-                    b.HasIndex("TeacherId", "SubjectId");
+                    b.HasIndex("TeacherSubjectTeacherId", "TeacherSubjectSubjectId");
 
-                    b.ToTable("Grades", (string)null);
+                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Student", b =>
@@ -199,7 +205,7 @@ namespace Kundalik.Uz.Data.Migrations
 
                     b.HasOne("Kundalik.Uz.Models.TeacherSubject", "TeacherSubject")
                         .WithMany("Grades")
-                        .HasForeignKey("TeacherId", "SubjectId")
+                        .HasForeignKey("TeacherSubjectTeacherId", "TeacherSubjectSubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -9,7 +9,8 @@ namespace Kundalik.Uz.Data
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Teacher> Teachers { get; set; }
         public virtual DbSet<Class> Classes { get; set; }
-        public virtual DbSet<Subject> Subject { get; set; }
+        public virtual DbSet<Subject> Subjects { get; set; }
+        public virtual DbSet<Grades> Grades { get; set; }
         public virtual DbSet<TeacherSubject> TeachersSubjects { get; set; }
         public KundalikDbContext()
         {
@@ -47,10 +48,6 @@ namespace Kundalik.Uz.Data
                 .ToTable(nameof(TeacherSubject));
             modelBuilder.Entity<TeacherSubject>()
                 .HasKey(ts => new { ts.TeacherId, ts.SubjectId});
-            modelBuilder.Entity<TeacherSubject>()
-                .HasMany(m => m.Grades)
-                .WithOne(m => m.TeacherSubject)
-                .HasForeignKey(k => k.TeacherSubjectId);
 
             modelBuilder.Entity<TeacherSubject>()
                 .HasOne(ts => ts.Teacher)
@@ -62,6 +59,16 @@ namespace Kundalik.Uz.Data
                 .WithMany(t => t.TeacherSubjects)
                 .HasForeignKey(ts => ts.SubjectId);
 
+            modelBuilder.Entity<Grades>()
+                .ToTable(nameof(Grades))
+                .HasKey(g => g.Id);
+
+            modelBuilder.Entity<Grades>()
+                .HasOne(g => g.TeacherSubject)
+                .WithMany(ts => ts.Grades)
+                .HasForeignKey(g => new {g.TeacherId, g.SubjectId});
+
+          
             modelBuilder.Entity<Class>()
                 .ToTable(nameof(Class));
             modelBuilder.Entity<Class>()
@@ -70,11 +77,6 @@ namespace Kundalik.Uz.Data
                 .HasMany(x => x.Students)
                 .WithOne(c => c.Class)
                 .HasForeignKey(p => p.Class_id);
-
-           modelBuilder.Entity<Grades>()
-                .ToTable(nameof(Grades));
-            modelBuilder.Entity<Grades>()
-                .HasKey(x => x.Id);
 
 
             base.OnModelCreating(modelBuilder);
