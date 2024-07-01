@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Kundalik.Uz.Data.Migrations
+namespace Kundalik.Uz.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTeacherSubjecttoDbContext : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,16 +25,27 @@ namespace Kundalik.Uz.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subject",
+                name: "Student",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Class_id = table.Column<int>(type: "int", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subject", x => x.Id);
+                    table.PrimaryKey("PK_Student", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Student_Class_Class_id",
+                        column: x => x.Class_id,
+                        principalTable: "Class",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,7 +57,6 @@ namespace Kundalik.Uz.Data.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Class_id = table.Column<int>(type: "int", nullable: true),
-                    ClassId = table.Column<int>(type: "int", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -56,31 +66,26 @@ namespace Kundalik.Uz.Data.Migrations
                 {
                     table.PrimaryKey("PK_Teacher", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Teacher_Class_ClassId",
-                        column: x => x.ClassId,
+                        name: "FK_Teacher_Class_Class_id",
+                        column: x => x.Class_id,
                         principalTable: "Class",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "TeacherSubject",
+                name: "Subject",
                 columns: table => new
                 {
-                    TeacherId = table.Column<int>(type: "int", nullable: false),
-                    SubjectId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TeacherId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TeacherSubject", x => new { x.TeacherId, x.SubjectId });
+                    table.PrimaryKey("PK_Subject", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TeacherSubject_Subject_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subject",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TeacherSubject_Teacher_TeacherId",
+                        name: "FK_Subject_Teacher_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teacher",
                         principalColumn: "Id",
@@ -96,9 +101,7 @@ namespace Kundalik.Uz.Data.Migrations
                     GradeValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
-                    TeacherSubjectId = table.Column<int>(type: "int", nullable: false),
-                    TeacherSubjectTeacherId = table.Column<int>(type: "int", nullable: false),
-                    TeacherSubjectSubjectId = table.Column<int>(type: "int", nullable: false)
+                    SubjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,17 +113,12 @@ namespace Kundalik.Uz.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Grades_TeacherSubject_TeacherSubjectTeacherId_TeacherSubjectSubjectId",
-                        columns: x => new { x.TeacherSubjectTeacherId, x.TeacherSubjectSubjectId },
-                        principalTable: "TeacherSubject",
-                        principalColumns: new[] { "TeacherId", "SubjectId" },
+                        name: "FK_Grades_Subject_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subject",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Student_Class_id",
-                table: "Student",
-                column: "Class_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Grades_StudentId",
@@ -128,41 +126,37 @@ namespace Kundalik.Uz.Data.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Grades_TeacherSubjectTeacherId_TeacherSubjectSubjectId",
+                name: "IX_Grades_SubjectId",
                 table: "Grades",
-                columns: new[] { "TeacherSubjectTeacherId", "TeacherSubjectSubjectId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Teacher_ClassId",
-                table: "Teacher",
-                column: "ClassId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TeacherSubject_SubjectId",
-                table: "TeacherSubject",
                 column: "SubjectId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Student_Class_Class_id",
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Class_id",
                 table: "Student",
+                column: "Class_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subject_TeacherId",
+                table: "Subject",
+                column: "TeacherId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teacher_Class_id",
+                table: "Teacher",
                 column: "Class_id",
-                principalTable: "Class",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                unique: true,
+                filter: "[Class_id] IS NOT NULL");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Student_Class_Class_id",
-                table: "Student");
-
             migrationBuilder.DropTable(
                 name: "Grades");
 
             migrationBuilder.DropTable(
-                name: "TeacherSubject");
+                name: "Student");
 
             migrationBuilder.DropTable(
                 name: "Subject");
@@ -172,10 +166,6 @@ namespace Kundalik.Uz.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Class");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Student_Class_id",
-                table: "Student");
         }
     }
 }
