@@ -12,6 +12,7 @@
         public string Password { get; set; }
         public RoleType? role { get; set; }
 
-        public virtual ICollection<TeacherSubject> TeacherSubjects { get; set; }
+        public Subject Subject { get; set; }
+
     }
 }

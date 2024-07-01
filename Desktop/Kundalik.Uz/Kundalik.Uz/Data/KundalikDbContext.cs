@@ -11,7 +11,6 @@ namespace Kundalik.Uz.Data
         public virtual DbSet<Class> Classes { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
         public virtual DbSet<Grades> Grades { get; set; }
-        public virtual DbSet<TeacherSubject> TeachersSubjects { get; set; }
         public KundalikDbContext()
         {
           
@@ -38,37 +37,30 @@ namespace Kundalik.Uz.Data
                .ToTable(nameof(Teacher));
             modelBuilder.Entity<Teacher>()
                 .HasKey(x => x.Id);
+            modelBuilder.Entity<Teacher>()
+                .HasOne(t => t.Subject)
+                .WithOne(s => s.Teacher)
+                .HasForeignKey<Subject>(f => f.TeacherId);
 
             modelBuilder.Entity<Subject>()
                 .ToTable(nameof(Subject));
             modelBuilder.Entity<Subject>()
                 .HasKey(x => x.Id);
 
-            modelBuilder.Entity<TeacherSubject>()
-                .ToTable(nameof(TeacherSubject));
-            modelBuilder.Entity<TeacherSubject>()
-                .HasKey(ts => new { ts.TeacherId, ts.SubjectId});
 
-            modelBuilder.Entity<TeacherSubject>()
-                .HasOne(ts => ts.Teacher)
-                .WithMany(t => t.TeacherSubjects)
-                .HasForeignKey(ts => ts.TeacherId);
-
-            modelBuilder.Entity<TeacherSubject>()
-                .HasOne(ts => ts.Subject)
-                .WithMany(t => t.TeacherSubjects)
-                .HasForeignKey(ts => ts.SubjectId);
 
             modelBuilder.Entity<Grades>()
                 .ToTable(nameof(Grades))
                 .HasKey(g => g.Id);
-
             modelBuilder.Entity<Grades>()
-                .HasOne(g => g.TeacherSubject)
-                .WithMany(ts => ts.Grades)
-                .HasForeignKey(g => new {g.TeacherId, g.SubjectId});
+                .HasOne(g => g.Student)
+                .WithMany(g => g.Grades)
+                .HasForeignKey(g => g.StudentId);
+            modelBuilder.Entity<Grades>()
+                .HasOne(g => g.Subject)
+                .WithMany(g => g.Grades)
+                .HasForeignKey(g => g.SubjectId);
 
-          
             modelBuilder.Entity<Class>()
                 .ToTable(nameof(Class));
             modelBuilder.Entity<Class>()
@@ -77,6 +69,11 @@ namespace Kundalik.Uz.Data
                 .HasMany(x => x.Students)
                 .WithOne(c => c.Class)
                 .HasForeignKey(p => p.Class_id);
+
+            modelBuilder.Entity<Class>()
+                .HasOne(t => t.Teacher)
+                .WithOne(c => c.Class)
+                .HasForeignKey<Teacher>(t => t.Class_id);
 
 
             base.OnModelCreating(modelBuilder);

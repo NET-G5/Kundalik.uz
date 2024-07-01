@@ -4,19 +4,16 @@ using Kundalik.Uz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Kundalik.Uz.Data.Migrations
+namespace Kundalik.Uz.Migrations
 {
     [DbContext(typeof(KundalikDbContext))]
-    [Migration("20240622122117_Update DbContext")]
-    partial class UpdateDbContext
+    partial class KundalikDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,14 +60,11 @@ namespace Kundalik.Uz.Data.Migrations
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
-                    b.HasIndex("TeacherId", "SubjectId");
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("Grades", (string)null);
                 });
@@ -125,7 +119,13 @@ namespace Kundalik.Uz.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TeacherId")
+                        .IsUnique();
 
                     b.ToTable("Subject", (string)null);
                 });
@@ -137,9 +137,6 @@ namespace Kundalik.Uz.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ClassId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("Class_id")
                         .HasColumnType("int");
@@ -169,27 +166,11 @@ namespace Kundalik.Uz.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("Class_id")
+                        .IsUnique()
+                        .HasFilter("[Class_id] IS NOT NULL");
 
                     b.ToTable("Teacher", (string)null);
-                });
-
-            modelBuilder.Entity("Kundalik.Uz.Models.TeacherSubject", b =>
-                {
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("TeacherId", "SubjectId");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("TeacherSubject", (string)null);
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Grades", b =>
@@ -200,15 +181,15 @@ namespace Kundalik.Uz.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kundalik.Uz.Models.TeacherSubject", "TeacherSubject")
+                    b.HasOne("Kundalik.Uz.Models.Subject", "Subject")
                         .WithMany("Grades")
-                        .HasForeignKey("TeacherId", "SubjectId")
+                        .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Student");
 
-                    b.Navigation("TeacherSubject");
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Student", b =>
@@ -222,37 +203,32 @@ namespace Kundalik.Uz.Data.Migrations
                     b.Navigation("Class");
                 });
 
+            modelBuilder.Entity("Kundalik.Uz.Models.Subject", b =>
+                {
+                    b.HasOne("Kundalik.Uz.Models.Teacher", "Teacher")
+                        .WithOne("Subject")
+                        .HasForeignKey("Kundalik.Uz.Models.Subject", "TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("Kundalik.Uz.Models.Teacher", b =>
                 {
                     b.HasOne("Kundalik.Uz.Models.Class", "Class")
-                        .WithMany()
-                        .HasForeignKey("ClassId");
+                        .WithOne("Teacher")
+                        .HasForeignKey("Kundalik.Uz.Models.Teacher", "Class_id");
 
                     b.Navigation("Class");
-                });
-
-            modelBuilder.Entity("Kundalik.Uz.Models.TeacherSubject", b =>
-                {
-                    b.HasOne("Kundalik.Uz.Models.Subject", "Subject")
-                        .WithMany("TeacherSubjects")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kundalik.Uz.Models.Teacher", "Teacher")
-                        .WithMany("TeacherSubjects")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Class", b =>
                 {
                     b.Navigation("Students");
+
+                    b.Navigation("Teacher")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Student", b =>
@@ -262,17 +238,13 @@ namespace Kundalik.Uz.Data.Migrations
 
             modelBuilder.Entity("Kundalik.Uz.Models.Subject", b =>
                 {
-                    b.Navigation("TeacherSubjects");
+                    b.Navigation("Grades");
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Teacher", b =>
                 {
-                    b.Navigation("TeacherSubjects");
-                });
-
-            modelBuilder.Entity("Kundalik.Uz.Models.TeacherSubject", b =>
-                {
-                    b.Navigation("Grades");
+                    b.Navigation("Subject")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
