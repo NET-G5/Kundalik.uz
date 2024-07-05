@@ -47,8 +47,6 @@ namespace Kundalik.Uz.Data
             modelBuilder.Entity<Subject>()
                 .HasKey(x => x.Id);
 
-
-
             modelBuilder.Entity<Grades>()
                 .ToTable(nameof(Grades))
                 .HasKey(g => g.Id);
@@ -69,12 +67,6 @@ namespace Kundalik.Uz.Data
                 .HasMany(x => x.Students)
                 .WithOne(c => c.Class)
                 .HasForeignKey(p => p.Class_id);
-
-            modelBuilder.Entity<Class>()
-                .HasOne(t => t.Teacher)
-                .WithOne(c => c.Class)
-                .HasForeignKey<Teacher>(t => t.Class_id);
-
 
             base.OnModelCreating(modelBuilder);
         }
