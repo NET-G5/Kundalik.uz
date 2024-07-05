@@ -13,6 +13,10 @@ namespace Kundalik.Uz.Services
             using var context = new KundalikDbContext();
 
             CreateClases(context);
+            CreateStudents(context);
+            CreateTeachers(context);
+            AddStudentToClass(context);
+            AddSubjectToTeacher(context);
         }
 
         private static void CreateStudents(KundalikDbContext context)
@@ -44,7 +48,7 @@ namespace Kundalik.Uz.Services
         {
             if (context.Teachers.Any()) return;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var teacher = new Teacher();
                 var gender = GetRandomGender();
@@ -56,6 +60,8 @@ namespace Kundalik.Uz.Services
                 teacher.PhoneNumber = faker.Phone.PhoneNumber("+998##-###-##-##");
                 teacher.UserName = faker.Internet.UserName(firstName, lastName);
                 teacher.Password = faker.Internet.Password(8);
+
+                context.Teachers.Add(teacher);
             }
 
             context.SaveChanges();
@@ -77,26 +83,40 @@ namespace Kundalik.Uz.Services
             context.SaveChanges();
         }
 
-        private static void AddClassToTeacher(KundalikDbContext context)
+        private static void AddSubjectToTeacher(KundalikDbContext context)
         {
-            HashSet<Class> classes = new HashSet<Class>();
+            var teachers = context.Teachers.ToList();
 
-            foreach (Class c in context.Classes)
+            foreach(var subject in context.Subjects)
             {
-                classes.Add(c);
-            }
+                var teacher = teachers.FirstOrDefault(t => t.Subject is null);
 
-            foreach (Teacher teacher in context.Teachers)
-            {
-                var classItem = classes.FirstOrDefault(c => c.Teacher == null);
-
-                if (classItem != null)
+                if(teacher is not null)
                 {
-                    classItem.Teacher = teacher;
-                    teacher.Class_id = classItem.Id;
+                    subject.TeacherId = teacher.Id;
+                    teacher.Subject = subject;
+                    
                 }
             }
+            context.SaveChanges();
+        }
 
+        private static void AddStudentToClass(KundalikDbContext context)
+        {
+            var studentIds = context.Students.Select(x => x.Id).ToArray();
+            var classIds = context.Classes.Select(x => x.Id).ToList();
+            int counter = 0;
+
+            foreach (var student in context.Students)
+            {
+                if (counter == 22)
+                {
+                    classIds.Remove(student.Class_id);
+                    counter = 0;
+                }
+                student.Class_id = classIds[0];
+                counter++;
+            }
         }
 
         private static Bogus.DataSets.Name.Gender GetRandomGender()
