@@ -19,6 +19,7 @@ namespace Kundalik.Uz.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=DESKTOP-VLH642J;Initial Catalog=KundalikCom;Integrated Security=True;Pooling=False;Encrypt=True;Trust Server Certificate=True");
+
             base.OnConfiguring(optionsBuilder);
         }
 
