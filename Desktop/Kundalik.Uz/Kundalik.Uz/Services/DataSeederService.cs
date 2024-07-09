@@ -12,11 +12,7 @@ namespace Kundalik.Uz.Services
         {
             using var context = new KundalikDbContext();
 
-            CreateClases(context);
-            CreateStudents(context);
-            CreateTeachers(context);
-            AddStudentToClass(context);
-            AddSubjectToTeacher(context);
+            
         }
 
         private static void CreateStudents(KundalikDbContext context)
@@ -111,7 +107,7 @@ namespace Kundalik.Uz.Services
             {
                 if (counter == 22)
                 {
-                    classIds.Remove(student.Class_id);
+                    classIds.Remove(student.Class_id - 1);
                     counter = 0;
                 }
                 student.Class_id = classIds[0];

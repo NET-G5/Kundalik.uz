@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:Kundalik.Uz.Views"
     Title="MainWindow"
     WindowState="Maximized"
     Width="800"
@@ -18,19 +19,21 @@
                 materialDesign:ColorZoneAssist.Mode="Standard"
                 Style="{StaticResource MaterialDesignNavigationRailTabControl}"
                 TabStripPlacement="Top">
-                <TabItem>
+                <TabItem Margin="50 0 0 0">
                     <TabItem.Header>
-                        <StackPanel Width="auto" Height="auto">
+                        <StackPanel Width="auto" Height="auto" Margin="0 0 0 0">
                             <materialDesign:PackIcon
                                 Width="24"
                                 Height="24"
                                 HorizontalAlignment="Center"
-                                Kind="Folder" />
-                            <TextBlock HorizontalAlignment="Center" Text="All Files" />
+                                Kind="School" />
+                            <TextBlock HorizontalAlignment="Center" Text="School" />
                         </StackPanel>
                     </TabItem.Header>
+                    <views:StudentsView/>
                 </TabItem>
-                <TabItem>
+               
+                <TabItem Margin="50 0 0 0">
                     <TabItem.Header>
                         <StackPanel Width="auto" Height="auto">
                             <materialDesign:PackIcon
@@ -41,16 +44,9 @@
                             <TextBlock HorizontalAlignment="Center" Text="Recent" />
                         </StackPanel>
                     </TabItem.Header>
-                    <TextBlock>
-                        <Run Text="tab 2 content. Default look and behaviors." />
-                        <LineBreak />
-                        <LineBreak />
-                        <Run FontStyle="Italic">
-                            Praesent sed dui arcu. Vivamus porta auctor sagittis
-                        </Run>
-                    </TextBlock>
                 </TabItem>
-                <TabItem>
+                
+                <TabItem Margin="50 0 0 0">
                     <TabItem.Header>
                         <StackPanel Width="auto" Height="auto">
                             <materialDesign:PackIcon
@@ -61,13 +57,9 @@
                             <TextBlock HorizontalAlignment="Center" Text="Photos" />
                         </StackPanel>
                     </TabItem.Header>
-                    <TextBlock>
-                        <Run Text="tab 3 content. Default look and behaviors." />
-                        <LineBreak />
-                        <LineBreak />
-                    </TextBlock>
                 </TabItem>
-                <TabItem>
+                
+                <TabItem Margin="50 0 0 0">
                     <TabItem.Header>
                         <StackPanel Width="auto" Height="auto">
                             <materialDesign:PackIcon
@@ -78,11 +70,7 @@
                             <TextBlock HorizontalAlignment="Center" Text="Sounds" />
                         </StackPanel>
                     </TabItem.Header>
-                    <TextBlock>
-                        <Run Text="tab 4 content. Default look and behaviors." />
-                        <LineBreak />
-                        <LineBreak />
-                    </TextBlock>
+                   
                 </TabItem>
             </TabControl>
         </materialDesign:Card>
