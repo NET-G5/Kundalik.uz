@@ -45,11 +45,12 @@
                 DisplayMemberPath="Name"
                 AutoGenerateColumns="False"
                 IsSynchronizedWithCurrentItem="True"
+                IsReadOnly="True"
                 ItemsSource="{Binding Students}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="200" Binding="{Binding Id}" Header="Student id"/>
-                    <DataGridTextColumn Width="200" Binding="{Binding FirstName}" Header="First name"/>
-                    <DataGridTextColumn Width="200" Binding="{Binding LastName}" Header="Last name"/>
+                    <DataGridTextColumn Width="200" Binding="{Binding FirstName}" Header="Firstname"/>
+                    <DataGridTextColumn Width="200" Binding="{Binding LastName}" Header="Lastname"/>
                     <DataGridTextColumn Width="200" Binding="{Binding PhoneNumber}" Header="Phone number"/>
                     <DataGridTextColumn Width="200" Binding="{Binding UserName}" Header="Uername"/>
                     <DataGridTextColumn Width="200" Binding="{Binding Password}" Header="Password"/>

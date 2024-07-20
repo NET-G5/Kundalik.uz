@@ -4,16 +4,19 @@ using Kundalik.Uz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Kundalik.Uz.Migrations
+namespace Kundalik.Uz.Data.Migrations
 {
     [DbContext(typeof(KundalikDbContext))]
-    partial class KundalikDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240717122421_Delete changes")]
+    partial class Deletechanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
