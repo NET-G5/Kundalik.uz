@@ -4,16 +4,19 @@ using Kundalik.Uz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Kundalik.Uz.Migrations
+namespace Kundalik.Uz.Data.Migrations
 {
     [DbContext(typeof(KundalikDbContext))]
-    partial class KundalikDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240717121842_updateStudent")]
+    partial class updateStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,6 +60,9 @@ namespace Kundalik.Uz.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StudentId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
@@ -66,6 +72,8 @@ namespace Kundalik.Uz.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("StudentId1");
 
                     b.HasIndex("SubjectId");
 
@@ -80,12 +88,30 @@ namespace Kundalik.Uz.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("CanLoadMore")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Class_id")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Footer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Header")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBusy")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsNotBusy")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -97,6 +123,12 @@ namespace Kundalik.Uz.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -177,6 +209,10 @@ namespace Kundalik.Uz.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Kundalik.Uz.Models.Student", null)
+                        .WithMany("_grades")
+                        .HasForeignKey("StudentId1");
+
                     b.HasOne("Kundalik.Uz.Models.Subject", "Subject")
                         .WithMany("Grades")
                         .HasForeignKey("SubjectId")
@@ -218,6 +254,8 @@ namespace Kundalik.Uz.Migrations
             modelBuilder.Entity("Kundalik.Uz.Models.Student", b =>
                 {
                     b.Navigation("Grades");
+
+                    b.Navigation("_grades");
                 });
 
             modelBuilder.Entity("Kundalik.Uz.Models.Subject", b =>
